@@ -9,6 +9,7 @@ const eventSchema = mongoose.Schema({
   ratingQuantity: { type: Number, default: 0 },
   eventStartTime: { type: Date, required: 'Event must have a start time' },
   price: Number,
+  status: { type: Boolean, default: true },
 });
 
 module.exports = mongoose.model('Event', eventSchema);
