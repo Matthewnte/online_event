@@ -38,11 +38,11 @@ exports.getAllEvents = async (req, res) => {
 
 exports.getEvent = async (req, res) => {
   try {
-    const tour = await Event.findById(req.params.id);
+    const event = await Event.findById(req.params.id);
     return res.status(200).json({
       status: 'success',
       data: {
-        tour,
+        event,
       },
     });
   } catch (error) {
