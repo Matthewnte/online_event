@@ -72,3 +72,20 @@ exports.updateEvent = async (req, res) => {
     });
   }
 };
+
+exports.deleteEvent = async (req, res) => {
+  try {
+    await Event.findByIdAndDelete(req.params.id);
+    return res.status(204).json({
+      status: 'success',
+      data: {
+        event: null,
+      },
+    });
+  } catch (error) {
+    return res.status(404).json({
+      status: 'fail',
+      message: error,
+    });
+  }
+};
