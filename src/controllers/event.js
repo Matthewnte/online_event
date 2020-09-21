@@ -12,8 +12,26 @@ exports.createEvent = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({
-      status: 'failed',
+      status: 'fail',
       error,
+    });
+  }
+};
+
+exports.getAllEvents = async (req, res) => {
+  try {
+    const events = await Event.find();
+    return res.status(200).json({
+      status: 'success',
+      results: events.length,
+      data: {
+        events,
+      },
+    });
+  } catch (error) {
+    return res.status(404).json({
+      status: 'fail',
+      message: error,
     });
   }
 };
