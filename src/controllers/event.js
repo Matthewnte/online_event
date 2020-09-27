@@ -1,4 +1,5 @@
 const Event = require('../models/eventModel');
+const ApiFeatures = require('../utils/apiFeatures');
 
 exports.createEvent = async (req, res) => {
   try {
@@ -20,7 +21,15 @@ exports.createEvent = async (req, res) => {
 
 exports.getAllEvents = async (req, res) => {
   try {
-    const events = await Event.find();
+    // Execute query
+    const features = new ApiFeatures(Event.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+    const events = await features.query;
+
+    // Send response
     return res.status(200).json({
       status: 'success',
       results: events.length,
