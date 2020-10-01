@@ -1,9 +1,9 @@
 const express = require('express');
 
 // Import modules and routes
-// const AppError = require('./utils/appError');
 const errorHandler = require('./middleware/errorHandler');
 const eventRoute = require('./routes/event');
+const userRoute = require('./routes/user');
 
 // initialize express server
 const app = express();
@@ -11,8 +11,9 @@ const app = express();
 // parses incomming request to json object
 app.use(express.json());
 
-// entry to event route
+// route entry
 app.use('/api/v1/events', eventRoute);
+app.use('/api/v1/users', userRoute);
 
 // handle all errors
 app.use(errorHandler);

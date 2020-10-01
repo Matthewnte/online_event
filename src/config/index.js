@@ -17,5 +17,6 @@ module.exports = {
   databaseURL: process.env.MONGODB_URI,
   db_password: process.env.DB_PASSWORD,
 
-  secretKey: process.env.DEVELOPMENT_SECRET_KEY,
+  jwt_secretKey: process.env.JWT_SECRET,
+  jwt_expiresIn: process.env.JWT_EXPIRES_IN,
 };
