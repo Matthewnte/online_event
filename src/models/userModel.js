@@ -17,7 +17,7 @@ const userSchema = mongoose.Schema({
   photo: String,
   password: {
     type: String,
-    required: 'Password name is required',
+    required: 'Password is required',
     minlength: [8, 'Password must be atleast 8 characters'],
     select: false,
   },
@@ -45,6 +45,13 @@ userSchema.pre('save', async function (next) {
 
   // delete confirmPassword field
   this.confirmPassword = undefined;
+  return next();
+});
+
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000;
   return next();
 });
 

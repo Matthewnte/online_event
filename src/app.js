@@ -2,8 +2,8 @@ const express = require('express');
 
 // Import modules and routes
 const errorHandler = require('./middleware/errorHandler');
-const eventRoute = require('./routes/event');
-const userRoute = require('./routes/user');
+const eventRoute = require('./routes/eventRoutes');
+const userRoute = require('./routes/userRoutes');
 
 // initialize express server
 const app = express();
