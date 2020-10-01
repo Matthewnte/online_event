@@ -6,8 +6,8 @@ const eventSchema = mongoose.Schema({
   name: {
     type: String,
     required: 'Event must have a name',
-    trim: true,
     unique: true,
+    trim: true,
   },
   category: {
     type: String,
@@ -15,14 +15,17 @@ const eventSchema = mongoose.Schema({
     enum: categories,
   },
   platform: { type: String, required: 'Event must have venue' },
-  image: { type: String, required: 'Event must have an image' },
+  image: { type: String, required: 'Event must have a cover image' },
   description: { type: String, trim: true },
   ratingAverage: { type: Number, default: 4.5 },
   ratingQuantity: { type: Number, default: 0 },
-  startDate: { type: Date, required: 'Event must have a start Date' },
+  startDate: { type: [Date], required: 'Event must have a start Date' },
   price: Number,
   maxNumberOfAttendees: { type: Number },
   status: { type: Boolean, default: true },
+  reviews: String,
+  feedBacks: [String],
+  createdAt: { type: Date, default: Date.now() },
 });
 
 module.exports = mongoose.model('Event', eventSchema);
