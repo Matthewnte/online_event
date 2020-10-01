@@ -88,3 +88,25 @@ exports.refreshToken = catchAsyncError(async (req, res, next) => {
     },
   });
 });
+
+exports.forgotPassword = catchAsyncError(async (req, res, next) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) return next(new AppError('There is no user with that email address'));
+
+  // Generete random reset token
+  const resetToken = user.createPasswordResetToken();
+  user.save({ validateBeforeSave: false });
+});
+
+exports.resetPassword = catchAsyncError(async (req, res, next) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) return next(new AppError('There is no user with that email address'));
+
+  // Generete random reset token
+  const resetToken = user.createPasswordResetToken();
+  user.save({ validateBeforeSave: false });
+});
