@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validate = require('validator');
 const bcrypt = require('bcryptjs');
+const crypto = require('crypto');
 
 const userSchema = mongoose.Schema({
   firstName: { type: String, required: 'First name is required' },
@@ -12,10 +13,11 @@ const userSchema = mongoose.Schema({
     lowercase: true,
     validate: [validate.isEmail, 'Please enter a valid email'],
   },
+  role: { type: String, enum: ['user', 'admin', 'host'], default: 'user' },
   photo: String,
   password: {
     type: String,
-    required: 'Password name is required',
+    required: 'Password is required',
     minlength: [8, 'Password must be atleast 8 characters'],
     select: false,
   },
@@ -29,6 +31,9 @@ const userSchema = mongoose.Schema({
       message: 'Password are not the same',
     },
   },
+  passwordChangedAt: Date,
+  passwordResetToken: String,
+  passwordResetExpires: Date,
 });
 
 userSchema.pre('save', async function (next) {
@@ -43,9 +48,37 @@ userSchema.pre('save', async function (next) {
   return next();
 });
 
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000;
+  return next();
+});
+
 userSchema.methods.checkPassword = async function (password, userPassword) {
   const isCorrectPassword = await bcrypt.compare(password, userPassword);
   return isCorrectPassword;
+};
+
+userSchema.methods.hasChangePassword = function (jwtTimestamp) {
+  if (this.passwordChangedAt) {
+    const changedTimestamp = parseInt(
+      this.passwordChangedAt.getTime() / 1000,
+      10,
+    );
+    return jwtTimestamp < changedTimestamp;
+  }
+  return false;
+};
+
+userSchema.methods.createPasswordResetToken = function () {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+  return resetToken;
 };
 
 module.exports = mongoose.model('User', userSchema);
