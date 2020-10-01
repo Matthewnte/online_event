@@ -35,3 +35,20 @@ exports.getAllEvents = async (req, res) => {
     });
   }
 };
+
+exports.getEvent = async (req, res) => {
+  try {
+    const event = await Event.findById(req.params.id);
+    return res.status(200).json({
+      status: 'success',
+      data: {
+        event,
+      },
+    });
+  } catch (error) {
+    return res.status(404).json({
+      status: 'fail',
+      message: error,
+    });
+  }
+};
