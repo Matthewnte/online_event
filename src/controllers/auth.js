@@ -21,6 +21,20 @@ const verifyRefreshToken = (refreshToken) => new Promise((resolve, reject) => {
   });
 });
 
+const sendResponse = (statusCode, user, res) => {
+  const accessToken = signAccessToken(user._id);
+  const refreshToken = signAccessToken(user._id);
+
+  res.status(statusCode).json({
+    status: 'success',
+    accessToken,
+    refreshToken,
+    data: {
+      user,
+    },
+  });
+};
+
 exports.signup = catchAsyncError(async (req, res) => {
   const newUser = await User.create({
     firstName: req.body.firstName,
@@ -30,15 +44,7 @@ exports.signup = catchAsyncError(async (req, res) => {
     confirmPassword: req.body.confirmPassword,
   });
 
-  const accessToken = signAccessToken(newUser._id);
-
-  res.status(201).json({
-    status: 'success',
-    accessToken,
-    data: {
-      user: newUser,
-    },
-  });
+  sendResponse(201, newUser, res);
 });
 
 exports.login = catchAsyncError(async (req, res, next) => {
@@ -56,17 +62,7 @@ exports.login = catchAsyncError(async (req, res, next) => {
     return next(new AppError('Incorrect email or password', 401));
   }
 
-  const accessToken = signAccessToken(user._id);
-  const refreshToken = signRefreshToken(user._id);
-
-  return res.status(200).json({
-    status: 'success',
-    accessToken,
-    refreshToken,
-    data: {
-      user,
-    },
-  });
+  sendResponse(200, user, res);
 });
 
 exports.refreshToken = catchAsyncError(async (req, res, next) => {
@@ -159,9 +155,28 @@ exports.resetPassword = catchAsyncError(async (req, res, next) => {
   const accessToken = signAccessToken(user._id);
   const refreshToken = signAccessToken(user._id);
 
-  return res.status(200).json({
-    status: 'success',
-    accessToken,
-    refreshToken,
-  });
+  return sendResponse(201, user, res);
+});
+
+exports.updatePassword = catchAsyncError(async (req, res, next) => {
+  // Get user from the collection
+  const { currentPassword, newPassword } = req.body;
+  const user = await User.findById(req.user.id).select('+password');
+
+  if (!currentPassword || !newPassword) {
+    return next(new AppError('Please enter password details'), 400);
+  }
+
+  // Verify password
+  if (!(await user.checkPassword(req.body.currentPassword, user.password))) {
+    return next(new AppError('You entered a wrong password', 401));
+  }
+
+  // if correct, update current password
+  user.password = req.body.newPassword;
+  user.confirmPassword = req.body.confirmNewPassword;
+  await user.save();
+
+  // Log user in, send jwt
+  return sendResponse(201, user, res);
 });
