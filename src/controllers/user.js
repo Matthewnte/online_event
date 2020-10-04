@@ -31,3 +31,12 @@ exports.updateUser = catchAsyncError(async (req, res, next) => {
     },
   });
 });
+
+exports.deleteUser = catchAsyncError(async (req, res) => {
+  await User.findOneAndUpdate(req.user.id, { active: false });
+
+  return res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
