@@ -62,7 +62,7 @@ exports.login = catchAsyncError(async (req, res, next) => {
     return next(new AppError('Incorrect email or password', 401));
   }
 
-  sendResponse(200, user, res);
+  return sendResponse(200, user, res);
 });
 
 exports.refreshToken = catchAsyncError(async (req, res, next) => {

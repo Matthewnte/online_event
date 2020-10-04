@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 const authController = require('../controllers/auth');
+const userController = require('../controllers/user');
 const authMiddleware = require('../middleware/authHandler');
 
 router.post('/signup', authController.signup);
@@ -16,6 +17,12 @@ router.patch(
   '/updatePassword',
   authMiddleware.authCheck,
   authController.updatePassword,
+);
+
+router.patch(
+  '/updateUser',
+  authMiddleware.authCheck,
+  userController.updateUser,
 );
 
 module.exports = router;
