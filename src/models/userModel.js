@@ -60,6 +60,12 @@ userSchema.pre('save', function (next) {
   return next();
 });
 
+userSchema.pre(/^find/, function (next) {
+  // this keyword points to current query
+  this.find({ active: { $ne: false } });
+  next();
+});
+
 userSchema.methods.checkPassword = async function (password, userPassword) {
   const isCorrectPassword = await bcrypt.compare(password, userPassword);
   return isCorrectPassword;
