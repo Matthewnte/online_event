@@ -10,7 +10,7 @@ const filterObj = (obj, allowedFields) => {
   return newObj;
 };
 
-exports.getUsers = catchAsyncError(async (req, res) => {
+exports.getAllUsers = catchAsyncError(async (req, res) => {
   const users = await User.find();
 
   return res.status(200).json({
@@ -18,6 +18,19 @@ exports.getUsers = catchAsyncError(async (req, res) => {
     results: users.length,
     data: {
       users,
+    },
+  });
+});
+
+exports.getUser = catchAsyncError(async (req, res, next) => {
+  const user = await User.findById(req.params.id);
+
+  if (!user) return next(new AppError('No user found', 404));
+
+  return res.status(200).json({
+    status: 'success',
+    data: {
+      user,
     },
   });
 });
