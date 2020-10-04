@@ -24,5 +24,10 @@ router.patch(
   authMiddleware.authCheck,
   userController.updateUser,
 );
+router.delete(
+  '/deleteUser',
+  authMiddleware.authCheck,
+  userController.deleteUser,
+);
 
 module.exports = router;
