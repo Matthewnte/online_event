@@ -17,7 +17,7 @@ exports.updateUser = catchAsyncError(async (req, res, next) => {
   }
 
   // update user documnet
-  const allowedFields = ['name', 'email'];
+  const allowedFields = ['firstName', 'lastName', 'email'];
   const filteredBody = filterObj(req.body, allowedFields);
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
