@@ -22,6 +22,7 @@ module.exports = {
   refresh_token_secret: process.env.REFRESH_TOKEN_SECRET,
   access_secret_expiresIn: process.env.ACCESS_SECRET_EXPIRES_IN,
   refresh_secret_expiresIn: process.env.REFRESH_SECRET_EXPIRES_IN,
+  refresh_cookie_expiresIn: process.env.REFRESH_COOKIE_EXPIRES_IN,
 
   // nodeMailer
   email_userName: process.env.EMAIL_USERNAME,
