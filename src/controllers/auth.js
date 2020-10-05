@@ -25,10 +25,20 @@ const sendResponse = (statusCode, user, res) => {
   const accessToken = signAccessToken(user._id);
   const refreshToken = signAccessToken(user._id);
 
+  const coookieOptions = {
+    expires: new Date(
+      Date.now() + config.refresh_cookie_expiresIn * 24 * 60 * 60 * 1000,
+    ),
+    httpOnly: true,
+  };
+  // if (process.env.NODE_ENV === 'production') coookieOptions.secure = true;
+  user.password = undefined;
+
+  res.cookie('rfjwt', refreshToken, coookieOptions);
+
   res.status(statusCode).json({
     status: 'success',
     accessToken,
-    refreshToken,
     data: {
       user,
     },
@@ -72,19 +82,10 @@ exports.refreshToken = catchAsyncError(async (req, res, next) => {
 
   // verify refresh token
   const userId = await verifyRefreshToken(refreshToken);
+  const user = await User.findById(userId);
 
   // sign new jwt accessToken and refresh token
-  const newRefreshToken = signRefreshToken(userId);
-  const newAccessToken = signAccessToken(userId);
-
-  // return response
-  return res.status(200).json({
-    status: 'success',
-    data: {
-      newAccessToken,
-      newRefreshToken,
-    },
-  });
+  return sendResponse(200, user, res);
 });
 
 exports.forgotPassword = catchAsyncError(async (req, res, next) => {
