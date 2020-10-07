@@ -23,7 +23,7 @@ const verifyRefreshToken = (refreshToken) => new Promise((resolve, reject) => {
 
 const sendResponse = (statusCode, user, res) => {
   const accessToken = signAccessToken(user._id);
-  const refreshToken = signAccessToken(user._id);
+  const refreshToken = signRefreshToken(user._id);
 
   const coookieOptions = {
     expires: new Date(
