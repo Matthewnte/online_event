@@ -26,6 +26,19 @@ const eventSchema = mongoose.Schema({
   reviews: String,
   feedBacks: [String],
   createdAt: { type: Date, default: Date.now() },
+  host: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+  },
+});
+
+eventSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'host',
+    select: '-__v -passwordChangedAt',
+  });
+
+  next();
 });
 
 module.exports = mongoose.model('Event', eventSchema);
