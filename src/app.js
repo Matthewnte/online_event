@@ -3,6 +3,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
+const hpp = require('hpp');
 
 // Import modules and routes
 const errorHandler = require('./middleware/errorHandler');
@@ -24,6 +25,18 @@ app.use(mongoSanitize());
 
 // Data sanitization against XSS attack
 app.use(xss());
+
+// Prevent parameter pollution
+app.use(
+  hpp({
+    whitelist: [
+      'ratingsQuantity',
+      'ratingsAverage',
+      'price',
+      'maxNumberOfAttendees',
+    ],
+  }),
+);
 
 // Limit amount of login tries
 const limiter = rateLimit({
