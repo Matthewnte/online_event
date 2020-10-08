@@ -9,6 +9,7 @@ const hpp = require('hpp');
 const errorHandler = require('./middleware/errorHandler');
 const eventRoute = require('./routes/eventRoutes');
 const userRoute = require('./routes/userRoutes');
+const reviewRoute = require('./routes/reviewRoutes');
 
 // initialize express server
 const app = express();
@@ -52,6 +53,7 @@ app.use('/api/v1/users/login', limiter);
 // route entry
 app.use('/api/v1/events', eventRoute);
 app.use('/api/v1/users', userRoute);
+app.use('/api/v1/reviews', reviewRoute);
 
 // handle all errors
 app.use(errorHandler);

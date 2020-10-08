@@ -34,7 +34,7 @@ exports.getAllEvents = catchAsyncError(async (req, res) => {
 });
 
 exports.getEvent = catchAsyncError(async (req, res, next) => {
-  const event = await Event.findById(req.params.id);
+  const event = await (await Event.findById(req.params.id));
 
   if (!event) {
     return next(new AppError('No event found', 404));

@@ -11,7 +11,7 @@ router.get('/:id', authMiddleware.authCheck, userController.getUser);
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 
-router.post('/refresh-token', authController.refreshToken);
+router.post('/refresh-token', authMiddleware.authCheck, authController.refreshToken);
 
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
