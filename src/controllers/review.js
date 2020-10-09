@@ -14,9 +14,9 @@ exports.getAllReviews = catchAsyncError(async (req, res) => {
   });
 });
 
+exports.getReview = factory.getOne(Review);
+
 exports.setEventUserIds = (req, res, next) => {
-  console.log(req.body);
-  console.log(req.params);
   if (!req.body.event) req.body.event = req.params.eventId;
   if (!req.body.user) req.body.user = req.user.id;
   next();

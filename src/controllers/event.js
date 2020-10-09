@@ -1,6 +1,5 @@
 const Event = require('../models/eventModel');
 const ApiFeatures = require('../utils/apiFeatures');
-const AppError = require('../utils/appError');
 const catchAsyncError = require('../utils/catchAsyncError');
 const factory = require('./handlerFactory');
 
@@ -30,20 +29,7 @@ exports.getAllEvents = catchAsyncError(async (req, res) => {
   });
 });
 
-exports.getEvent = catchAsyncError(async (req, res, next) => {
-  const event = await (await Event.findById(req.params.id));
-
-  if (!event) {
-    return next(new AppError('No event found', 404));
-  }
-
-  return res.status(200).json({
-    status: 'success',
-    data: {
-      event,
-    },
-  });
-});
+exports.getEvent = factory.getOne(Event, { path: 'reviews' });
 
 exports.updateEvent = factory.updateOne(Event);
 

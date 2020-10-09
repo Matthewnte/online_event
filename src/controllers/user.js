@@ -23,19 +23,6 @@ exports.getAllUsers = catchAsyncError(async (req, res) => {
   });
 });
 
-exports.getUser = catchAsyncError(async (req, res, next) => {
-  const user = await User.findById(req.params.id);
-
-  if (!user) return next(new AppError('No user found', 404));
-
-  return res.status(200).json({
-    status: 'success',
-    data: {
-      user,
-    },
-  });
-});
-
 exports.updateMe = catchAsyncError(async (req, res, next) => {
   // create Error if user post password data
   if (req.body.password || req.body.confirmPassword) {
@@ -66,6 +53,8 @@ exports.deleteMe = catchAsyncError(async (req, res) => {
     data: null,
   });
 });
+
+exports.getUser = factory.getOne(User);
 
 // DO NOT update password here
 exports.updateUser = factory.updateOne(User);
