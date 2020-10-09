@@ -11,18 +11,6 @@ const filterObj = (obj, allowedFields) => {
   return newObj;
 };
 
-exports.getAllUsers = catchAsyncError(async (req, res) => {
-  const users = await User.find();
-
-  return res.status(200).json({
-    status: 'success',
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
-
 exports.updateMe = catchAsyncError(async (req, res, next) => {
   // create Error if user post password data
   if (req.body.password || req.body.confirmPassword) {
@@ -53,6 +41,8 @@ exports.deleteMe = catchAsyncError(async (req, res) => {
     data: null,
   });
 });
+
+exports.getAllUsers = factory.getAll(User);
 
 exports.getUser = factory.getOne(User);
 

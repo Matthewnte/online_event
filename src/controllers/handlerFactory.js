@@ -1,5 +1,7 @@
 const catchAsyncError = require('../utils/catchAsyncError');
 const AppError = require('../utils/appError');
+const ApiFeatures = require('../utils/apiFeatures');
+const { query } = require('express');
 
 exports.deleteOne = (Model) => catchAsyncError(async (req, res, next) => {
   const doc = await Model.findByIdAndDelete(req.params.id);
@@ -53,6 +55,27 @@ exports.getOne = (Model, populateOptions) => catchAsyncError(async (req, res, ne
 
   return res.status(200).json({
     status: 'success',
+    data: {
+      doc,
+    },
+  });
+});
+
+exports.getAll = (Model) => catchAsyncError(async (req, res) => {
+  // let filter = {};
+  // if (query.params.eventId) filter = { event: req.params.eventId };
+  // Execute query
+  const features = new ApiFeatures(Model.find(), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+  const doc = await features.query;
+
+  // Send response
+  return res.status(200).json({
+    status: 'success',
+    results: doc.length,
     data: {
       doc,
     },
