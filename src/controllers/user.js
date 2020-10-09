@@ -67,4 +67,7 @@ exports.deleteMe = catchAsyncError(async (req, res) => {
   });
 });
 
+// DO NOT update password here
+exports.updateUser = factory.updateOne(User);
+
 exports.deleteUser = factory.deleteOne(User);

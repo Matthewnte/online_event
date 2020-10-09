@@ -13,3 +13,21 @@ exports.deleteOne = (Model) => catchAsyncError(async (req, res, next) => {
     data: null,
   });
 });
+
+exports.updateOne = (Model) => catchAsyncError(async (req, res, next) => {
+  const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  if (!doc) {
+    return next(new AppError('No doc found', 404));
+  }
+
+  return res.status(200).json({
+    status: 'success',
+    data: {
+      doc,
+    },
+  });
+});

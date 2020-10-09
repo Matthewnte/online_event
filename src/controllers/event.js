@@ -49,22 +49,6 @@ exports.getEvent = catchAsyncError(async (req, res, next) => {
   });
 });
 
-exports.updateEvent = catchAsyncError(async (req, res, next) => {
-  const event = await Event.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-
-  if (!event) {
-    return next(new AppError('No event found', 404));
-  }
-
-  return res.status(200).json({
-    status: 'success',
-    data: {
-      event,
-    },
-  });
-});
+exports.updateEvent = factory.updateOne(Event);
 
 exports.deleteEvent = factory.deleteOne(Event);

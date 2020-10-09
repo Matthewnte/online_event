@@ -30,4 +30,6 @@ exports.getAllReviews = catchAsyncError(async (req, res) => {
   });
 });
 
+exports.updateReviews = factory.updateOne(Review);
+
 exports.deleteReviews = factory.deleteOne(Review);

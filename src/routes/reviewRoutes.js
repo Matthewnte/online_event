@@ -16,6 +16,7 @@ router
 
 router
   .route('/:id')
+  .patch(reviewController.updateReviews)
   .delete(
     authHandler.authCheck,
     authHandler.restrictTo('user', 'admin'),
