@@ -3,6 +3,8 @@ const catchAsyncError = require('../utils/catchAsyncError');
 const AppError = require('../utils/appError');
 
 exports.createReview = catchAsyncError(async (req, res, next) => {
+  if (!req.body.event) req.body.event = req.params.eventId;
+  if (!req.body.user) req.body.user = req.user.id;
   if (req.body.rating === '') return next(new AppError('Please rating the event'));
 
   const newReview = await Review.create(req.body);

@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 const eventController = require('../controllers/event');
+const reviewController = require('../controllers/review');
 const authMiddleware = require('../middleware/authHandler');
 
 router
@@ -22,6 +23,14 @@ router
     authMiddleware.authCheck,
     authMiddleware.restrictTo('admin, host'),
     eventController.deleteEvent,
+  );
+
+router
+  .route('/:eventId/reviews')
+  .post(
+    authMiddleware.authCheck,
+    authMiddleware.restrictTo('user'),
+    reviewController.createReview,
   );
 
 module.exports = router;
