@@ -9,7 +9,11 @@ const authMiddleware = require('../middleware/authHandler');
 router
   .route('/')
   .get(eventController.getAllEvents)
-  .post(authMiddleware.authCheck, eventController.createEvent);
+  .post(
+    authMiddleware.authCheck,
+    eventController.categoryToLowerCase,
+    eventController.createEvent,
+  );
 
 router
   .route('/:id')
@@ -30,6 +34,7 @@ router
   .post(
     authMiddleware.authCheck,
     authMiddleware.restrictTo('user'),
+    reviewController.setEventUserIds,
     reviewController.createReview,
   );
 

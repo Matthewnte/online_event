@@ -4,16 +4,12 @@ const AppError = require('../utils/appError');
 const catchAsyncError = require('../utils/catchAsyncError');
 const factory = require('./handlerFactory');
 
-exports.createEvent = catchAsyncError(async (req, res) => {
-  const reqBody = { ...req.body, category: req.body.category.toLowerCase() };
-  const newEvent = await Event.create(reqBody);
-  return res.status(201).json({
-    status: 'success',
-    data: {
-      event: newEvent,
-    },
-  });
-});
+exports.categoryToLowerCase = (req, res, next) => {
+  req.body = { ...req.body, category: req.body.category.toLowerCase() };
+  next();
+};
+
+exports.createEvent = factory.createOne(Event);
 
 exports.getAllEvents = catchAsyncError(async (req, res) => {
   // Execute query

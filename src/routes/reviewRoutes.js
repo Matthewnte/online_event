@@ -11,6 +11,7 @@ router
   .post(
     authHandler.authCheck,
     authHandler.restrictTo('user'),
+    reviewController.setEventUserIds,
     reviewController.createReview,
   );
 

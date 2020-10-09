@@ -31,3 +31,13 @@ exports.updateOne = (Model) => catchAsyncError(async (req, res, next) => {
     },
   });
 });
+
+exports.createOne = (Model) => catchAsyncError(async (req, res) => {
+  const doc = await Model.create(req.body);
+  return res.status(201).json({
+    status: 'success',
+    data: {
+      data: doc,
+    },
+  });
+});

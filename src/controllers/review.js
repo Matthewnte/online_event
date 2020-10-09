@@ -1,22 +1,6 @@
 const Review = require('../models/reviewModel');
 const catchAsyncError = require('../utils/catchAsyncError');
-const AppError = require('../utils/appError');
 const factory = require('./handlerFactory');
-
-exports.createReview = catchAsyncError(async (req, res, next) => {
-  if (!req.body.event) req.body.event = req.params.eventId;
-  if (!req.body.user) req.body.user = req.user.id;
-  if (req.body.rating === '') return next(new AppError('Please rating the event'));
-
-  const newReview = await Review.create(req.body);
-
-  return res.status(201).json({
-    status: 'success',
-    data: {
-      review: newReview,
-    },
-  });
-});
 
 exports.getAllReviews = catchAsyncError(async (req, res) => {
   const reviews = await Review.find();
@@ -29,6 +13,16 @@ exports.getAllReviews = catchAsyncError(async (req, res) => {
     },
   });
 });
+
+exports.setEventUserIds = (req, res, next) => {
+  console.log(req.body);
+  console.log(req.params);
+  if (!req.body.event) req.body.event = req.params.eventId;
+  if (!req.body.user) req.body.user = req.user.id;
+  next();
+};
+
+exports.createReview = factory.createOne(Review);
 
 exports.updateReviews = factory.updateOne(Review);
 
