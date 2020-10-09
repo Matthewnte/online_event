@@ -1,6 +1,7 @@
 const User = require('../models/userModel');
 const catchAsyncError = require('../utils/catchAsyncError');
 const AppError = require('../utils/appError');
+const factory = require('./handlerFactory');
 
 const filterObj = (obj, allowedFields) => {
   const newObj = {};
@@ -35,7 +36,7 @@ exports.getUser = catchAsyncError(async (req, res, next) => {
   });
 });
 
-exports.updateUser = catchAsyncError(async (req, res, next) => {
+exports.updateMe = catchAsyncError(async (req, res, next) => {
   // create Error if user post password data
   if (req.body.password || req.body.confirmPassword) {
     return next(new AppError("You can't update password here", 400));
@@ -57,7 +58,7 @@ exports.updateUser = catchAsyncError(async (req, res, next) => {
   });
 });
 
-exports.deleteUser = catchAsyncError(async (req, res) => {
+exports.deleteMe = catchAsyncError(async (req, res) => {
   await User.findOneAndUpdate(req.user.id, { active: false });
 
   return res.status(204).json({
@@ -65,3 +66,5 @@ exports.deleteUser = catchAsyncError(async (req, res) => {
     data: null,
   });
 });
+
+exports.deleteUser = factory.deleteOne(User);

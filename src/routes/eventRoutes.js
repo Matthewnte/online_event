@@ -16,12 +16,12 @@ router
   .get(eventController.getEvent)
   .patch(
     authMiddleware.authCheck,
-    authMiddleware.restrictTo('admin, host'),
+    authMiddleware.restrictTo('admin', 'host'),
     eventController.updateEvent,
   )
   .delete(
     authMiddleware.authCheck,
-    authMiddleware.restrictTo('admin, host'),
+    authMiddleware.restrictTo('admin', 'host'),
     eventController.deleteEvent,
   );
 

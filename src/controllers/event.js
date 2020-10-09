@@ -2,6 +2,7 @@ const Event = require('../models/eventModel');
 const ApiFeatures = require('../utils/apiFeatures');
 const AppError = require('../utils/appError');
 const catchAsyncError = require('../utils/catchAsyncError');
+const factory = require('./handlerFactory');
 
 exports.createEvent = catchAsyncError(async (req, res) => {
   const reqBody = { ...req.body, category: req.body.category.toLowerCase() };
@@ -66,17 +67,4 @@ exports.updateEvent = catchAsyncError(async (req, res, next) => {
   });
 });
 
-exports.deleteEvent = catchAsyncError(async (req, res, next) => {
-  const event = await Event.findByIdAndDelete(req.params.id);
-
-  if (!event) {
-    return next(new AppError('No event found', 404));
-  }
-
-  return res.status(204).json({
-    status: 'success',
-    data: {
-      event: null,
-    },
-  });
-});
+exports.deleteEvent = factory.deleteOne(Event);

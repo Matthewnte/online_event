@@ -6,8 +6,6 @@ const authController = require('../controllers/auth');
 const userController = require('../controllers/user');
 const authMiddleware = require('../middleware/authHandler');
 
-router.get('/', authMiddleware.authCheck, userController.getAllUsers);
-router.get('/:id', authMiddleware.authCheck, userController.getUser);
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 
@@ -15,21 +13,27 @@ router.post('/refresh-token', authController.refreshToken);
 
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
+
 router.patch(
   '/updatePassword',
   authMiddleware.authCheck,
   authController.updatePassword,
 );
 
-router.patch(
-  '/updateUser',
-  authMiddleware.authCheck,
-  userController.updateUser,
-);
-router.delete(
-  '/deleteUser',
-  authMiddleware.authCheck,
-  userController.deleteUser,
-);
+router.patch('/updateMe', authMiddleware.authCheck, userController.updateMe);
+router.delete('/deleteMe', authMiddleware.authCheck, userController.deleteMe);
+
+router
+  .route('/')
+  .get(authMiddleware.authCheck, userController.getAllUsers);
+
+router
+  .route('/:id')
+  .get(authMiddleware.authCheck, userController.getUser)
+  .delete(
+    authMiddleware.authCheck,
+    authMiddleware.restrictTo('admin'),
+    userController.deleteUser,
+  );
 
 module.exports = router;
