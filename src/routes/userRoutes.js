@@ -20,6 +20,7 @@ router.patch(
   authController.updatePassword,
 );
 
+router.get('/me', authMiddleware.authCheck, userController.getMe, userController.getUser);
 router.patch('/updateMe', authMiddleware.authCheck, userController.updateMe);
 router.delete('/deleteMe', authMiddleware.authCheck, userController.deleteMe);
 
