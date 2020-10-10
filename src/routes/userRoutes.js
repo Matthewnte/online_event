@@ -23,14 +23,16 @@ router.patch(
 router.patch('/updateMe', authMiddleware.authCheck, userController.updateMe);
 router.delete('/deleteMe', authMiddleware.authCheck, userController.deleteMe);
 
-router
-  .route('/')
-  .get(authMiddleware.authCheck, userController.getAllUsers);
+router.route('/').get(authMiddleware.authCheck, userController.getAllUsers);
 
 router
   .route('/:id')
   .get(authMiddleware.authCheck, userController.getUser)
-  .patch(userController.updateUser)
+  .patch(
+    authMiddleware.authCheck,
+    authMiddleware.restrictTo('admin'),
+    userController.updateUser,
+  )
   .delete(
     authMiddleware.authCheck,
     authMiddleware.restrictTo('admin'),

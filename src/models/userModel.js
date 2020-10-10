@@ -3,43 +3,56 @@ const validate = require('validator');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 
-const userSchema = mongoose.Schema({
-  firstName: { type: String, required: 'First name is required' },
-  lastName: { type: String, required: 'Last name is required' },
-  email: {
-    type: String,
-    required: 'Email is required',
-    unique: true,
-    lowercase: true,
-    validate: [validate.isEmail, 'Please enter a valid email'],
-  },
-  role: { type: String, enum: ['user', 'admin', 'host'], default: 'user' },
-  photo: String,
-  password: {
-    type: String,
-    required: 'Password is required',
-    minlength: [8, 'Password must be atleast 8 characters'],
-    select: false,
-  },
-  confirmPassword: {
-    type: String,
-    required: 'Please confirm your password',
-    validate: {
-      validator(el) {
-        return el === this.password;
+const userSchema = mongoose.Schema(
+  {
+    firstName: { type: String, required: 'First name is required' },
+    lastName: { type: String, required: 'Last name is required' },
+    email: {
+      type: String,
+      required: 'Email is required',
+      unique: true,
+      lowercase: true,
+      validate: [validate.isEmail, 'Please enter a valid email'],
+    },
+    role: { type: String, enum: ['user', 'admin', 'host'], default: 'user' },
+    categories: [String],
+    photo: String,
+    password: {
+      type: String,
+      required: 'Password is required',
+      minlength: [8, 'Password must be atleast 8 characters'],
+      select: false,
+    },
+    confirmPassword: {
+      type: String,
+      required: 'Please confirm your password',
+      validate: {
+        validator(el) {
+          return el === this.password;
+        },
+        message: 'Password are not the same',
       },
-      message: 'Password are not the same',
+    },
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date,
+    active: {
+      type: Boolean,
+      default: true,
+      select: false,
     },
   },
-  passwordChangedAt: Date,
-  passwordResetToken: String,
-  passwordResetExpires: Date,
-  active: {
-    type: Boolean,
-    default: true,
-    select: false,
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   },
-});
+);
+
+// userSchema.virtual('categories', {
+//   ref: 'Category',
+//   foreignField: 'user',
+//   localField: '_id',
+// });
 
 userSchema.pre('save', async function (next) {
   // Only run if password was modified

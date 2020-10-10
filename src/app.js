@@ -10,6 +10,7 @@ const errorHandler = require('./middleware/errorHandler');
 const eventRoute = require('./routes/eventRoutes');
 const userRoute = require('./routes/userRoutes');
 const reviewRoute = require('./routes/reviewRoutes');
+const categoryRoute = require('./routes/categoryRoutes');
 
 // initialize express server
 const app = express();
@@ -54,6 +55,7 @@ app.use('/api/v1/users/login', limiter);
 app.use('/api/v1/events', eventRoute);
 app.use('/api/v1/users', userRoute);
 app.use('/api/v1/reviews', reviewRoute);
+app.use('/api/v1/categories', categoryRoute);
 
 // handle all errors
 app.use(errorHandler);
