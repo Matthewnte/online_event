@@ -4,6 +4,7 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const cors = require('cors');
 
 // Import modules and routes
 const errorHandler = require('./middleware/errorHandler');
@@ -16,6 +17,9 @@ const categoryRoute = require('./routes/categoryRoutes');
 const app = express();
 
 // GLOBAL MIDDLE WARES
+// Enable cors
+app.use(cors());
+
 // set secure http headers
 app.use(helmet());
 
