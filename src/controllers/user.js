@@ -11,6 +11,11 @@ const filterObj = (obj, allowedFields) => {
   return newObj;
 };
 
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
+
 exports.updateMe = catchAsyncError(async (req, res, next) => {
   // create Error if user post password data
   if (req.body.password || req.body.confirmPassword) {
@@ -18,7 +23,7 @@ exports.updateMe = catchAsyncError(async (req, res, next) => {
   }
 
   // update user documnet
-  const allowedFields = ['firstName', 'lastName', 'email'];
+  const allowedFields = ['firstName', 'lastName', 'email', 'categories'];
   const filteredBody = filterObj(req.body, allowedFields);
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,

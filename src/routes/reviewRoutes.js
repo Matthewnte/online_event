@@ -5,12 +5,13 @@ const authHandler = require('../middleware/authHandler');
 
 const router = express.Router();
 
+router.use(authHandler.authCheck);
+
 router
   .route('/')
   .get(reviewController.getAllReviews)
   .post(
-    authHandler.authCheck,
-    authHandler.restrictTo('user'),
+    authHandler.restrictTo('user', 'admin'),
     reviewController.setEventUserIds,
     reviewController.createReview,
   );
@@ -20,7 +21,6 @@ router
   .get(reviewController.getReview)
   .patch(reviewController.updateReviews)
   .delete(
-    authHandler.authCheck,
     authHandler.restrictTo('user', 'admin'),
     reviewController.deleteReviews,
   );

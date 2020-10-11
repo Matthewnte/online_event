@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const categories = ['sport', 'social', 'business', 'tech'];
+const categoriesEnum = ['sport', 'social', 'business', 'tech'];
 
 const eventSchema = mongoose.Schema(
   {
@@ -13,7 +13,7 @@ const eventSchema = mongoose.Schema(
     category: {
       type: String,
       required: 'Event must have a category',
-      enum: categories,
+      enum: categoriesEnum,
     },
     platform: { type: String, required: 'Event must have venue' },
     image: { type: String, required: 'Event must have a cover image' },
@@ -43,6 +43,12 @@ eventSchema.virtual('reviews', {
   foreignField: 'event',
   localField: '_id',
 });
+
+// eventSchema.virtual('categories', {
+//   ref: 'Category',
+//   foreignField: 'event',
+//   localField: '_id',
+// });
 
 eventSchema.pre(/^find/, function (next) {
   this.populate({

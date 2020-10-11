@@ -16,7 +16,7 @@ const reviewSchema = mongoose.Schema(
     event: {
       type: mongoose.Schema.ObjectId,
       ref: 'Event',
-      required: 'Review must belong to a tour',
+      required: 'Review must belong to an event',
     },
     createdAt: { type: Date, default: Date.now() },
   },
@@ -33,6 +33,47 @@ reviewSchema.pre(/^find/, function (next) {
   });
 
   next();
+});
+
+reviewSchema.static.calcAverageRatings = async function (eventId) {
+  const stats = await this.aggregate([
+    {
+      $match: { event: eventId },
+    },
+    {
+      $group: {
+        _id: '#event',
+        nRating: { $sum: 1 },
+        avgRAting: { $avg: '$rating' },
+      },
+    },
+  ]);
+
+  if (stats.length > 0) {
+    await Event.findByIdAndUpdate(eventId, {
+      ratingsQuantity: stats[0].nRating,
+      ratingsAverage: stats[1].avgRAting,
+    });
+  } else {
+    await Event.findByIdAndUpdate(eventId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 4.5,
+    });
+  }
+};
+
+reviewSchema.post('save', function () {
+  // this points to the current review
+  this.constructor.Review.calcAverageRatings(this.event);
+});
+
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+  this.r = await this.findOne();
+  next();
+});
+
+reviewSchema.post(/^findOneAnd/, async function () {
+  await this.r.constructor.calcAverageRatings(this.r.event);
 });
 
 module.exports = mongoose.model('Review', reviewSchema);
