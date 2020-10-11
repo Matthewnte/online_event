@@ -35,4 +35,29 @@ reviewSchema.pre(/^find/, function (next) {
   next();
 });
 
+reviewSchema.static.calcAverageRatings = async function (eventId) {
+  const stats = await this.aggregate([
+    {
+      $match: { event: eventId },
+    },
+    {
+      $group: {
+        _id: '#event',
+        nRating: { $sum: 1 },
+        avgRAting: { $avg: '$rating' },
+      },
+    },
+  ]);
+
+  await Event.findByIdAndUpdate(eventId, {
+    ratingsQuantity: stats[0].nRating,
+    ratingsAverage: stats[1].avgRAting,
+  });
+};
+
+reviewSchema.post('save', function () {
+  // this points to the current review
+  this.constructor.Review.calcAverageRatings(this.event);
+});
+
 module.exports = mongoose.model('Review', reviewSchema);
