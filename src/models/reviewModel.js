@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Event = require('./eventModel');
 
 const reviewSchema = mongoose.Schema(
   {
@@ -26,6 +27,8 @@ const reviewSchema = mongoose.Schema(
   },
 );
 
+reviewSchema.index({ event: 1, user: 1 }, { unique: true });
+
 reviewSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'user',
@@ -35,7 +38,7 @@ reviewSchema.pre(/^find/, function (next) {
   next();
 });
 
-reviewSchema.static.calcAverageRatings = async function (eventId) {
+reviewSchema.statics.calcAverageRatings = async function (eventId) {
   const stats = await this.aggregate([
     {
       $match: { event: eventId },
@@ -52,7 +55,7 @@ reviewSchema.static.calcAverageRatings = async function (eventId) {
   if (stats.length > 0) {
     await Event.findByIdAndUpdate(eventId, {
       ratingsQuantity: stats[0].nRating,
-      ratingsAverage: stats[1].avgRAting,
+      ratingsAverage: stats[0].avgRAting,
     });
   } else {
     await Event.findByIdAndUpdate(eventId, {
@@ -64,7 +67,7 @@ reviewSchema.static.calcAverageRatings = async function (eventId) {
 
 reviewSchema.post('save', function () {
   // this points to the current review
-  this.constructor.Review.calcAverageRatings(this.event);
+  this.constructor.calcAverageRatings(this.event);
 });
 
 reviewSchema.pre(/^findOneAnd/, async function (next) {
