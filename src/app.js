@@ -18,19 +18,20 @@ const app = express();
 
 // GLOBAL MIDDLE WARES
 // Enable cors
-app.use(cors());
+// app.use(cors());
+app.use([cors(), helmet(), express.json(), mongoSanitize(), xss()]);
 
 // set secure http headers
-app.use(helmet());
+// app.use(helmet());
 
 // parses incomming request to json object
-app.use(express.json());
+// app.use(express.json());
 
-// Data sanitization against NoSql infection
-app.use(mongoSanitize());
+// Data sanitization against NoSql injection
+// app.use(mongoSanitize());
 
 // Data sanitization against XSS attack
-app.use(xss());
+// app.use(xss());
 
 // Prevent parameter pollution
 app.use(
