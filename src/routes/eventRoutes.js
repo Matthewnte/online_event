@@ -6,12 +6,13 @@ const eventController = require('../controllers/event');
 const reviewController = require('../controllers/review');
 const authMiddleware = require('../middleware/authHandler');
 
+router.get('/user', authMiddleware.authCheck, eventController.getUserEvents);
+
 router
   .route('/')
   .get(eventController.getAllEvents)
   .post(
     authMiddleware.authCheck,
-    eventController.categoryToLowerCase,
     eventController.createEvent,
   );
 

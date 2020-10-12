@@ -80,3 +80,26 @@ exports.getAll = (Model) => catchAsyncError(async (req, res) => {
     },
   });
 });
+
+exports.getUserEvents = (Model) => catchAsyncError(async (req, res) => {
+  const filter = {};
+  // if (query.params.eventId) filter = { event: req.params.eventId };
+  // Execute query
+  if (req.user) filter.category = req.user.categories;
+
+  const features = new ApiFeatures(Model.find(filter), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .paginate();
+  const doc = await features.query;
+
+  // Send response
+  return res.status(200).json({
+    status: 'success',
+    results: doc.length,
+    data: {
+      doc,
+    },
+  });
+});

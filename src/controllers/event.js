@@ -8,6 +8,8 @@ exports.categoryToLowerCase = (req, res, next) => {
 
 exports.getAllEvents = factory.getAll(Event);
 
+exports.getUserEvents = factory.getUserEvents(Event);
+
 exports.createEvent = factory.createOne(Event);
 
 exports.getEvent = factory.getOne(Event, { path: 'reviews' });

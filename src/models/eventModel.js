@@ -11,9 +11,10 @@ const eventSchema = mongoose.Schema(
       trim: true,
     },
     category: {
-      type: String,
+      type: [String],
       required: 'Event must have a category',
       enum: categoriesEnum,
+      set: (val) => (val.map((el) => el.toLowerCase())),
     },
     platform: { type: String, required: 'Event must have venue' },
     image: { type: String, required: 'Event must have a cover image' },
@@ -30,7 +31,6 @@ const eventSchema = mongoose.Schema(
     price: Number,
     maxNumberOfAttendees: { type: Number },
     status: { type: Boolean, default: true },
-    feedBacks: [String],
     createdAt: { type: Date, default: Date.now() },
     host: {
       type: mongoose.Schema.ObjectId,
