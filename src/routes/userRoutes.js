@@ -5,6 +5,7 @@ const router = express.Router();
 const authController = require('../controllers/auth');
 const userController = require('../controllers/user');
 const authMiddleware = require('../middleware/authHandler');
+const multer = require('../middleware/multer');
 
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
@@ -24,7 +25,7 @@ router.patch(
 );
 
 router.get('/me', userController.getMe, userController.getUser);
-router.patch('/updateMe', userController.updateMe);
+router.patch('/updateMe', multer.uploadSingle, userController.updateMe);
 router.delete('/deleteMe', userController.deleteMe);
 
 router.route('/').get(userController.getAllUsers);

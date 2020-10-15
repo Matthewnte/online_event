@@ -18,6 +18,7 @@ const eventSchema = mongoose.Schema(
     },
     platform: { type: String, required: 'Event must have venue' },
     image: { type: String, required: 'Event must have a cover image' },
+    imageId: { type: String },
     description: { type: String, trim: true },
     ratingsAverage: {
       type: Number,

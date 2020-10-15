@@ -19,12 +19,20 @@ exports.getMe = (req, res, next) => {
 exports.updateMe = catchAsyncError(async (req, res, next) => {
   // create Error if user post password data
   if (req.body.password || req.body.confirmPassword) {
-    return next(new AppError("You can't update password here", 400));
+    return next(
+      new AppError(
+        "You can't update password with the route, Please use /updatePassword",
+        400,
+      ),
+    );
   }
 
-  // update user documnet
-  const allowedFields = ['firstName', 'lastName', 'email', 'categories'];
+  // FILTER unwanted field names that are not allowed to be updated
+  const allowedFields = ['firstName', 'lastName', 'email', 'category'];
   const filteredBody = filterObj(req.body, allowedFields);
+  if (req.file) filteredBody.photo = req.file.originalname;
+
+  // update user documnet
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
     runValidators: true,
