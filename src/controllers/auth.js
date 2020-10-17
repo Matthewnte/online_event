@@ -152,10 +152,6 @@ exports.resetPassword = catchAsyncError(async (req, res, next) => {
 
   // Update changePasswordAt property of the user
 
-  // Log the user in, send jwt
-  const accessToken = signAccessToken(user._id);
-  const refreshToken = signAccessToken(user._id);
-
   return sendResponse(201, user, res);
 });
 
