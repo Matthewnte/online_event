@@ -20,7 +20,12 @@ const userSchema = mongoose.Schema(
       lowercase: true,
       set: (val) => val.map((el) => el.toLowerCase()),
     },
-    photo: String,
+    photo: {
+      type: String,
+      default:
+        'https://res.cloudinary.com/daygucgkt/image/upload/v1602758572/blank-profile-picture-973460_1280_gbyj3p.png',
+    },
+    photoId: String,
     password: {
       type: String,
       required: 'Password is required',

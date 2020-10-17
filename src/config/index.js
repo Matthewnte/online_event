@@ -23,4 +23,9 @@ module.exports = {
   email_password: process.env.EMAIL_PASSWORD,
   email_host: process.env.EMAIL_HOST,
   email_port: process.env.EMAIL_PORT,
+
+  // cloudinary config
+  cloudinary_name: process.env.CLOUDINARY_NAME,
+  cloudinary_api_key: process.env.CLOUDINARY_NAME,
+  cloudinary_api_secret: process.env.CLOUDINARY_NAME,
 };
