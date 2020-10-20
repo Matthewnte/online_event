@@ -1,3 +1,6 @@
+const path = require('path');
+const cloudinary = require('cloudinary').v2;
+const DatauriParser = require('datauri/parser');
 const User = require('../models/userModel');
 const catchAsyncError = require('../utils/catchAsyncError');
 const AppError = require('../utils/appError');
@@ -17,6 +20,9 @@ exports.getMe = (req, res, next) => {
 };
 
 exports.updateMe = catchAsyncError(async (req, res, next) => {
+  // Instantiate parser
+  const parser = new DatauriParser();
+
   // create Error if user post password data
   if (req.body.password || req.body.confirmPassword) {
     return next(
@@ -30,7 +36,25 @@ exports.updateMe = catchAsyncError(async (req, res, next) => {
   // FILTER unwanted field names that are not allowed to be updated
   const allowedFields = ['firstName', 'lastName', 'email', 'category'];
   const filteredBody = filterObj(req.body, allowedFields);
-  if (req.file) filteredBody.photo = req.file.originalname;
+
+  if (req.file) {
+    if (req.user.photoId) {
+      await cloudinary.uploader.destroy(req.user.photoId);
+    }
+
+    const image = parser.format(
+      path.extname(req.file.originalname).toString(),
+      req.file.buffer,
+    ).content;
+
+    const result = await cloudinary.uploader.upload(image, {
+      folder: 'onlien_event',
+    });
+
+    // Update user photo field & photoId
+    filteredBody.photo = result.secure_url;
+    filteredBody.photoId = result.public_id;
+  }
 
   // update user documnet
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {

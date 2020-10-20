@@ -6,9 +6,6 @@ const cloudinary = require('cloudinary').v2;
 const AppError = require('../utils/appError');
 const config = require('../config');
 
-// Instantiate parser
-// const parser = new DatauriParser();
-
 // MULTER CONFIG - starts here
 
 // set storage engine
@@ -43,7 +40,7 @@ cloudinary.config({
   api_secret: config.cloudinary_api_secret,
 });
 
-// // CLOUDINARY CONFIG - ends here
+// CLOUDINARY CONFIG - ends here
 
 // // Upload an image
 // app.post('/upload', upload.single('image'), async (req, res) => {
