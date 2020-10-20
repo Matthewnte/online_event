@@ -16,6 +16,8 @@ router
     eventController.createEvent,
   );
 
+router.post('/search', eventController.findEvents);
+
 router
   .route('/:id')
   .get(eventController.getEvent)

@@ -1,3 +1,4 @@
+const escapeStringRegexp = require('escape-string-regexp');
 const catchAsyncError = require('../utils/catchAsyncError');
 const AppError = require('../utils/appError');
 const ApiFeatures = require('../utils/apiFeatures');
@@ -54,6 +55,56 @@ exports.getOne = (Model, populateOptions) => catchAsyncError(async (req, res, ne
 
   return res.status(200).json({
     status: 'success',
+    data: {
+      doc,
+    },
+  });
+});
+
+exports.findMatch = (Model) => catchAsyncError(async (req, res, next) => {
+  let query = {};
+
+  // Make a copy of req.query
+  const reqQuery = { ...req.query };
+
+  // Query params to be excluded as fields to match in DB for filtering
+  const removedParams = ['sort', 'page', 'limit'];
+
+  // remove excluded query params from query string
+  removedParams.forEach((param) => delete reqQuery[param]);
+
+  // Query term
+  const { term } = reqQuery;
+
+  if (!term) {
+    return next(new AppError('Please provide a search term', 400));
+  }
+
+  // Escape RegExp special characters.
+  const $regex = escapeStringRegexp(term);
+
+  query = Model.find({
+    $and: [
+      {
+        $or: [
+          { name: { $regex, $options: 'i' } },
+          // { price: { $regex, $options: 'i' } },
+          { platform: { $regex, $options: 'i' } },
+          { category: { $regex, $options: 'i' } },
+          { tags: { $regex, $options: 'i' } },
+        ],
+      },
+    ],
+  });
+  const doc = await query;
+
+  if (!doc) {
+    return next(new AppError(`No document found for ${req.params.event}`, 404));
+  }
+
+  return res.status(200).json({
+    status: 'success',
+    results: doc.length,
     data: {
       doc,
     },
