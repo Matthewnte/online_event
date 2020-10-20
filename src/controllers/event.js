@@ -12,6 +12,8 @@ exports.getUserEvents = factory.getUserEvents(Event);
 
 exports.createEvent = factory.createOne(Event);
 
+exports.findEvents = factory.findMatch(Event);
+
 exports.getEvent = factory.getOne(Event, { path: 'reviews' });
 
 exports.updateEvent = factory.updateOne(Event);
